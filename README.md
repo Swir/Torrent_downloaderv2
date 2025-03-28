@@ -24,7 +24,7 @@ Aplikacja webowa do pobierania torrentów z wykorzystaniem Transmission.
 
 1. Pobierz kod aplikacji na serwer:
    ```bash
-   git clone https://github.com/username/torrent-site.git
+   git clone https://github.com/Swir/Torrent_downloaderv2.git
    cd torrent-site
    ```
 
@@ -44,7 +44,7 @@ Aplikacja webowa do pobierania torrentów z wykorzystaniem Transmission.
 
 1. Sklonuj repozytorium lub pobierz kod aplikacji:
    ```bash
-   git clone https://github.com/username/torrent-site.git
+   git clone  https://github.com/Swir/Torrent_downloaderv2.git
    cd torrent-site
    ```
 
