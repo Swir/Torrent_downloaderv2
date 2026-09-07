@@ -1,183 +1,79 @@
-# Torrent Site
+<div align="center">
 
-Aplikacja webowa do pobierania torrentów z wykorzystaniem Transmission.
+# 🌊 Torrent Downloader v2
 
-## Funkcje
+**Self-hosted PHP interface for managing downloads through Transmission RPC**  
+**Self-hostowany interfejs PHP do zarządzania pobieraniem przez Transmission RPC**
 
-- Pobieranie torrentów z plików .torrent lub linków magnet
-- Automatyczne pakowanie pobranych plików do archiwów ZIP
-- Automatyczne usuwanie starych archiwów
-- Śledzenie postępu pobierania
-- Identyfikacja użytkowników przy użyciu UUID
+![PHP](https://img.shields.io/badge/PHP-7.4%2B-777BB4?logo=php&logoColor=white)
+![Transmission](https://img.shields.io/badge/Engine-Transmission-D70000)
+![Server](https://img.shields.io/badge/Server-Apache%20%7C%20Nginx-success)
+![Author](https://img.shields.io/badge/Author-Swir-ff4fa3)
 
-## Wymagania
+</div>
 
-- PHP 7.4 lub nowszy
-- Rozszerzenia PHP: curl, json, zip, openssl, mbstring
-- Transmission daemon z dostępem do RPC
-- Serwer WWW (Apache/Nginx)
-- Dostęp do cron
+---
 
-## Instalacja
+## 🇬🇧 English
 
-### Automatyczna instalacja
+Torrent Downloader v2 is a self-hosted PHP project designed to provide a web layer for a Transmission daemon through its RPC interface. The project includes configuration/bootstrap logic and an installer intended to simplify deployment on a compatible server.
 
-1. Pobierz kod aplikacji na serwer:
-   ```bash
-   git clone https://github.com/Swir/Torrent_downloaderv2.git
-   cd torrent-site
-   ```
+### ✨ Project capabilities
+- Transmission RPC integration
+- `.torrent` and magnet-oriented workflow
+- web-based deployment
+- installation/bootstrap scripts
+- configurable Transmission endpoint
+- server-side download environment
 
-2. Uruchom skrypt instalacyjny:
-   ```bash
-   php install.php
-   ```
-   
-   Możesz również uruchomić instalator przez przeglądarkę, wchodząc na adres:
-   ```
-   http://twoja-domena.pl/install.php
-   ```
+### 🛠 Requirements
+- PHP 7.4+
+- PHP extensions required by the deployment, including cURL/JSON and other features used by the application
+- Transmission daemon with RPC enabled
+- Apache/Nginx or another PHP-capable web server
 
-3. Postępuj zgodnie z instrukcjami wyświetlanymi przez instalator.
-
-### Ręczna instalacja
-
-1. Sklonuj repozytorium lub pobierz kod aplikacji:
-   ```bash
-   git clone  https://github.com/Swir/Torrent_downloaderv2.git
-   cd torrent-site
-   ```
-
-2. Utwórz wymagane katalogi:
-   ```bash
-   mkdir -p data zips logs classes
-   ```
-
-3. Utwórz pliki danych:
-   ```bash
-   echo "{}" > data/torrents.json
-   echo "{}" > data/users.json
-   ```
-
-4. Skopiuj pliki klas do katalogu `classes/`:
-   ```bash
-   # Ręcznie skopiuj wszystkie pliki klas
-   ```
-
-5. Utwórz plik konfiguracyjny `config.php`:
-   ```php
-   <?php
-   return [
-       'transmission' => [
-           'rpc_url' => 'http://127.0.0.1:9091/transmission/rpc',
-           'username' => '', // Jeśli wymagane, wstaw dane
-           'password' => '', // Jeśli wymagane, wstaw dane
-       ],
-       'paths' => [
-           'download_dir' => '/var/lib/transmission-daemon/downloads', // Dostosuj
-           'zip_dir' => __DIR__ . '/zips',
-           'data_file' => __DIR__ . '/data/torrents.json',
-           'users_file' => __DIR__ . '/data/users.json',
-           'logs_dir' => __DIR__ . '/logs',
-       ],
-       'settings' => [
-           'delete_after_hours' => 24,
-       ],
-   ];
-   ```
-
-6. Ustaw odpowiednie uprawnienia:
-   ```bash
-   chown -R www-data:www-data data zips logs
-   chmod -R 755 data zips logs
-   ```
-
-7. Utwórz zadanie cron do monitorowania torrentów:
-   ```bash
-   echo "*/5 * * * * php /ścieżka/do/aplikacji/monitor.php" > torrent_cron
-   crontab torrent_cron
-   ```
-
-## Konfiguracja
-
-### Transmission
-
-Upewnij się, że Transmission jest skonfigurowany z dostępem RPC:
-
-1. Edytuj plik konfiguracyjny Transmission:
-   ```bash
-   sudo nano /etc/transmission-daemon/settings.json
-   ```
-
-2. Ustaw następujące opcje:
-   ```json
-   {
-       "rpc-enabled": true,
-       "rpc-bind-address": "0.0.0.0",
-       "rpc-port": 9091,
-       "rpc-url": "/transmission/rpc",
-       "rpc-whitelist-enabled": false
-   }
-   ```
-
-3. Uruchom ponownie usługę Transmission:
-   ```bash
-   sudo systemctl restart transmission-daemon
-   ```
-
-### Serwer WWW
-
-Skonfiguruj serwer WWW (Apache/Nginx) do obsługi aplikacji. Przykład dla Apache:
-
-```apache
-<VirtualHost *:80>
-    ServerName torrent-site.local
-    DocumentRoot /var/www/torrent-site
-    
-    <Directory /var/www/torrent-site>
-        Options -Indexes +FollowSymLinks
-        AllowOverride All
-        Require all granted
-    </Directory>
-    
-    ErrorLog ${APACHE_LOG_DIR}/torrent-site-error.log
-    CustomLog ${APACHE_LOG_DIR}/torrent-site-access.log combined
-</VirtualHost>
+### 🚀 Basic setup
+```bash
+git clone https://github.com/Swir/Torrent_downloaderv2.git
+cd Torrent_downloaderv2
+php install.php
 ```
 
-## Aktualizacja
+Review `Config.php` and the installer before exposing the service publicly. Keep Transmission RPC authentication and firewall rules appropriately restricted.
 
-Aby zaktualizować aplikację:
+---
 
-1. Pobierz najnowszą wersję kodu:
-   ```bash
-   git pull origin main
-   ```
+## 🇵🇱 Polski
 
-2. Uruchom instalator, aby zaktualizować pliki:
-   ```bash
-   php install.php
-   ```
+Torrent Downloader v2 to self-hostowany projekt PHP zapewniający warstwę WWW dla demona Transmission poprzez interfejs RPC. Repozytorium zawiera konfigurację, bootstrap oraz instalator upraszczający wdrożenie na zgodnym serwerze.
 
-## Rozwiązywanie problemów
+### ✨ Możliwości projektu
+- integracja z Transmission RPC
+- obsługa workflow dla `.torrent` i linków magnet
+- interfejs przeznaczony do działania na serwerze WWW
+- instalator i mechanizm bootstrap
+- konfigurowalny adres usługi Transmission
+- serwerowe środowisko pobierania
 
-Logi aplikacji są zapisywane w katalogu `logs/`. W przypadku problemów:
+### 🛠 Wymagania
+- PHP 7.4+
+- wymagane rozszerzenia PHP, w tym cURL/JSON oraz pozostałe moduły używane przez aplikację
+- Transmission daemon z włączonym RPC
+- Apache/Nginx lub inny serwer obsługujący PHP
 
-1. Sprawdź logi aplikacji:
-   ```bash
-   cat logs/app.log
-   ```
+### 🚀 Podstawowa instalacja
+```bash
+git clone https://github.com/Swir/Torrent_downloaderv2.git
+cd Torrent_downloaderv2
+php install.php
+```
 
-2. Sprawdź logi serwera WWW:
-   ```bash
-   sudo tail -f /var/log/apache2/torrent-site-error.log
-   ```
+Przed wystawieniem usługi do Internetu sprawdź `Config.php`, konfigurację instalatora, uwierzytelnianie Transmission RPC oraz reguły firewalla.
 
-3. Sprawdź konfigurację Transmission:
-   ```bash
-   sudo cat /var/log/transmission/transmission.log
-   ```
+---
 
-## Licencja
+## 🔐 Responsible use / Odpowiedzialne użycie
+Use this project only to transfer content you are legally authorized to download or distribute. / Używaj projektu wyłącznie do pobierania i udostępniania treści, do których masz odpowiednie prawa.
 
-[MIT License](LICENSE)
+## 👤 Author / Autor
+Maintained in this repository by **Swir**.
