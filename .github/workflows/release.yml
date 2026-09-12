@@ -1,0 +1,65 @@
+name: Package and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release tag (for example v1.0.0)
+        required: true
+        default: v1.0.0
+  push:
+    tags:
+      - "v*"
+    branches:
+      - main
+    paths:
+      - ".github/workflows/release.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            version="${{ inputs.version }}"
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            version="${{ github.ref_name }}"
+          else
+            version="v1.0.0"
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Validate PHP files
+        shell: bash
+        run: |
+          find . -maxdepth 2 -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Build deployment ZIP
+        shell: bash
+        run: |
+          package="Torrent_downloaderv2-${VERSION}"
+          mkdir -p "$package"
+          rsync -a --exclude '.git' --exclude '.github' --exclude "$package" ./ "$package/"
+          zip -r "${package}.zip" "$package"
+          sha256sum "${package}.zip" > "${package}.zip.sha256"
+          echo "ZIP_NAME=${package}.zip" >> "$GITHUB_ENV"
+
+      - name: Publish GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$VERSION" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$VERSION" "$ZIP_NAME" "$ZIP_NAME.sha256" --clobber --repo "${{ github.repository }}"
+          else
+            gh release create "$VERSION" "$ZIP_NAME" "$ZIP_NAME.sha256" --target "${{ github.sha }}" --title "Torrent Downloader v2 ${VERSION}" --generate-notes --repo "${{ github.repository }}"
+          fi
